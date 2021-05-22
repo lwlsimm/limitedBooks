@@ -1,0 +1,65 @@
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.topDiv {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bookCard {
+  margin: 10px;
+  width: 350px;
+  height: 300px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  border-radius: 15px;
+  background-color: rgb(185, 184, 184);
+}
+
+.imgContainer {
+  grid-column: 1 / span 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+.bookPic {
+  width: 100px;
+  height: 150px;
+  box-shadow: 10px 10px 5px rgb(34, 34, 34)
+}
+
+.cardText {
+  grid-column: 2 / span 1;
+  text-align: center;
+  padding: 0 15px;
+  direction: flex;
+  flex-direction: column;
+  
+}
+
+.bookTitle {
+  font-weight: bold;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.bookAuthor {
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.bookDesc {
+  font-size: 1.2rem;
+  margin-bottom: 0.3rem;
+}
+
+.bookPrice {
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+

@@ -1,0 +1,17 @@
+.cart {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.smallBookPic {
+  width: 25px;
+  height: 37.5px;
+  margin: 5px;
+}
+
+h5 {
+  margin: 0 5px;
+}
