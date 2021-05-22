@@ -89,7 +89,7 @@ const CartView = () => {
                 <div class="p-2">
                 <h4>Empty</h4>
             </div> :
-            <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded"><button class="btn btn-warning btn-block btn-lg ml-2 pay-button font-weight-bold" type="button" data-toggle="modal" data-target="#cartModal">Proceed to Pay <span class="font-weight-bold">${Number.parseFloat(total.toFixed(2))}</span></button>
+            <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded"><button class="btn btn-warning btn-block btn-lg ml-2 pay-button font-weight-bold" type="button" data-toggle="modal" data-target="#OrderModal">Proceed to Pay <span class="font-weight-bold">${Number.parseFloat(total.toFixed(2))}</span></button>
             
             <div class="modal fade" id="OrderModal" role="dialog">
               <OrderModal books={books} total={total}/>
