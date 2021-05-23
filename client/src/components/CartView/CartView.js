@@ -1,21 +1,24 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import './cartView.css';
-import CartModal from '../OrderModal/OrderModal'
 import OrderModal from '../OrderModal/OrderModal';
+import axios from 'axios';
 
 const CartView = () => {
   const [books, setBooks] = useState([]);
   const [total, setTotal] = useState(0)
+  const [customerData, setCustomerData] = useState({})
+  const [isLoggedin, setIsLoggedIn] = useState()
   
-  const sessionStorage = window.localStorage;
+  const localStorage = window.localStorage;
+  const sessionStorage = window.sessionStorage;
 
   const getBooksFromStorage = () => {
-    const bookKeys = Object.keys(sessionStorage);
+    const bookKeys = Object.keys(localStorage);
     const booksForCart = [];
     let runningTotal = 0;
     for(let key in bookKeys){
       let id = bookKeys[key];
-      let bookObject = JSON.parse(sessionStorage.getItem(id));
+      let bookObject = JSON.parse(localStorage.getItem(id));
       if (bookObject.count > 0) {
         booksForCart.push(bookObject);
         runningTotal = runningTotal + Number(bookObject.price.replace(/[^0-9.-]+/g,"") * bookObject.count)
@@ -32,7 +35,7 @@ const CartView = () => {
     } else {
       change = -1
     }
-    let bookObject = JSON.parse(sessionStorage.getItem(id));
+    let bookObject = JSON.parse(localStorage.getItem(id));
     bookObject.count = bookObject.count + change;
     if (bookObject.count < 1) 
       {deleteFromCart(id);
@@ -40,12 +43,12 @@ const CartView = () => {
       return}
     else if (bookObject.count > bookObject.quantity)
       {bookObject.count = bookObject.quantity}
-    sessionStorage.setItem(id, JSON.stringify(bookObject));
+    localStorage.setItem(id, JSON.stringify(bookObject));
     getBooksFromStorage()
   }
 
   const deleteFromCart = (id) => {
-    sessionStorage.removeItem(id)
+    localStorage.removeItem(id)
     getBooksFromStorage()
   }
 
@@ -57,7 +60,29 @@ const CartView = () => {
     getBooksFromStorage();
   })
 
-  
+  const checkLogInStatus = async () => {
+    try { 
+        const {userId, sessionId} = JSON.parse(sessionStorage.getItem('customerData'));
+        const validity = await axios(`http://localhost:5500/api/login/check?userId=${userId}&sessionId=${sessionId}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/x-www-form-urlencoded",
+          "Access-Control-Allow-Origin": "*"
+        }});
+        await console.log('data back')
+        if(validity.data.valid_session) {
+          setIsLoggedIn(true);
+          setCustomerData(validity.data.customerData)
+          console.log(validity.data.customerData)
+        } 
+      isLoggedin(false); 
+      setCustomerData({}) 
+    } catch (error) {
+      setIsLoggedIn(false)
+      setCustomerData({})
+    }
+  }
+
+  let addressData = isLoggedin ? customerData : "";
 
   return (
     <Fragment>
@@ -89,10 +114,10 @@ const CartView = () => {
                 <div class="p-2">
                 <h4>Empty</h4>
             </div> :
-            <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded"><button class="btn btn-warning btn-block btn-lg ml-2 pay-button font-weight-bold" type="button" data-toggle="modal" data-target="#OrderModal">Proceed to Pay <span class="font-weight-bold">${Number.parseFloat(total.toFixed(2))}</span></button>
+            <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded"><button class="btn btn-warning btn-block btn-lg ml-2 pay-button font-weight-bold" type="button" data-toggle="modal"  data-target="#OrderModal" onClick={()=> checkLogInStatus()}>Proceed to Pay <span class="font-weight-bold">${Number.parseFloat(total.toFixed(2))}</span></button>
             
             <div class="modal fade" id="OrderModal" role="dialog">
-              <OrderModal books={books} total={total}/>
+              <OrderModal books={books} total={total} addressData={addressData}/>
             </div>
 
             </div>

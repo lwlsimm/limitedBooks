@@ -1,7 +1,7 @@
 const loginRouter = require('express').Router();
 const { urlencoded, json } = require('express');
 const pool = require('./db');
-const {getUserDataFromDB, createASession, checkSessionId, checkSessionStillValid} = require('./sessionQueries')
+const {getUserDataFromDB, createASession, checkSessionId, checkSessionStillValid, getFullCustomerData} = require('./sessionQueries')
 
 module.exports = loginRouter;
 
@@ -30,13 +30,17 @@ try {
 
 //CheckingLogin
 loginRouter.get('/check', async(req, res, next) => {
+  console.log('recd')
   try {
     const {userId, sessionId} = req.query;
     const newDate = new Date()
     const timeNow = newDate.getTime();
     const validity = await checkSessionStillValid(userId, sessionId, timeNow);
     if (validity) {
-      res.send({'valid_session': true})
+      console.log('Valid')
+      const customerData = await getFullCustomerData(userId);
+      console.log(customerData)
+      res.send({customerData,'valid_session': true})
     } else {
       res.send({'valid_session': false})
     }

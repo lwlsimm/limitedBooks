@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const NavBar = () => {
 
-  var [signedIn, setSignedIn] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
 
   const sessionStore = window.sessionStorage;
 

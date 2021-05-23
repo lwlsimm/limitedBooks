@@ -23,8 +23,7 @@ const getUserDataFromDB = async (email) => {
   return userByEmail;
 }
 
-const checkSessionStillValid = async (userId, sessionId, timeNow) => {
-  
+const checkSessionStillValid = async (userId, sessionId, timeNow) => { 
   try {
     const data = await pool.query("SELECT * FROM sessions WHERE id = $1", [sessionId]);
     const {expiry, customer_id} = await data.rows[0];
@@ -38,7 +37,6 @@ const checkSessionStillValid = async (userId, sessionId, timeNow) => {
 }
 
 const checkSessionId = async (session_id, customer_id) => {
-  console.log(session_id)
   const serverCheck= await pool.query("SELECT id FROM sessions WHERE customer_id = $1", [customer_id]);
   const sessIdFromServer = serverCheck.rows[0]
   const { id } = await sessIdFromServer;
@@ -47,6 +45,18 @@ const checkSessionId = async (session_id, customer_id) => {
   } else {
     return false
   }
+}
+
+const getFullCustomerData = async (customer_id) => {
+  const customerDBData = await pool.query("SELECT * FROM customers WHERE id = $1", [customer_id]);
+  const {first_name, last_name} = await customerDBData.rows[0];
+  const name = await `${first_name} ${last_name}`
+  const addressDBData = await pool.query("SELECT * FROM addresses WHERE customer_id = $1", [customer_id]);
+  const {address_1, address_2, postal_town, postcode} = await addressDBData.rows[0]
+  const data = await {
+    name, address_1, address_2, postal_town, postcode
+  };
+  return data;
 }
 
 const makeSessionCode = (length) => {
@@ -60,4 +70,4 @@ const makeSessionCode = (length) => {
   return result.join('');
 }
 
-module.exports = {makeSessionCode, checkSessionId, getUserDataFromDB, isEmailUnique, createASession, checkSessionStillValid}
+module.exports = {makeSessionCode, checkSessionId, getUserDataFromDB, isEmailUnique, createASession, checkSessionStillValid, getFullCustomerData}

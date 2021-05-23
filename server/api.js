@@ -19,7 +19,7 @@ const registerRouter = require('./register');
 apiRouter.use('/register',registerRouter);
 
 const orderRouter = require('./order');
-apiRouter.use('/order',orderRouter);
+apiRouter.use('/order', orderRouter);
 
 
 module.exports = apiRouter;
